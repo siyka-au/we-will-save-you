@@ -58,8 +58,10 @@ def calculate_land_transfer_fees(consideration: float, lodgement_type: Lodgement
     easement_fee = FEES[era]["easement_fee"]
     max_paper = FEES[era]["max_paper"]
     max_electronic = FEES[era]["max_electronic"]
+
     fee = 0
     max_fee = 0
+
     if lodgement_type == LodgementType.PAPER:
             fee += paper_lodgement_fee
             max_fee = max_paper
@@ -68,11 +70,15 @@ def calculate_land_transfer_fees(consideration: float, lodgement_type: Lodgement
             max_fee = max_electronic
     else:
             raise ValueError("Unexpected value in lodgement_type")
+    
     if easement_created_or_surrendered:
         fee += easement_fee
+
     if consideration >= 1000:
         fee += math.floor(consideration / 1000) * consideration_factor
         fee = min(fee, round(max_fee))
+
     if (easement_created_or_surrendered and consideration < 1000) or consideration >= 1000:
         fee = math.ceil(fee)
+
     return fee
